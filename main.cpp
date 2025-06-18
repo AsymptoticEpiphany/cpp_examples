@@ -1,7 +1,7 @@
 #include <iostream>
 
 void greet() {
-    std::cout << "Hello, World!!!" << std::endl;
+    std::cout << "Greetings Universe!!!" << std::endl;
 }
 
 int main() {
