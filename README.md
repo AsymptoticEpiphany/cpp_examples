@@ -1,7 +1,7 @@
 # C++ Example Code
 This project currently prints the elements of a tuple nicely and includes Google Test. Continuous Integration (CI) is set up using GitHub Actions.
 
-## Build and Run with CMake
+## Build and Run with Make
 
 From the project root directory, run the following commands (which delegates to CMake):
 
