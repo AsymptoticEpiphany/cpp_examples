@@ -8,6 +8,11 @@
 namespace utils {
 namespace tuple {
 
+// Forward declaration of print_tuple
+// Needed so print(std::ostream&, const std::tuple<Ts...>&) can call it
+template<std::size_t Index = 0, typename... Ts>
+void print_tuple(std::ostream& os, const std::tuple<Ts...>& tup);
+
 // Prints any generic type T that supports operator<<
 template<typename T>
 void print(std::ostream& os, const T& value) {
@@ -24,7 +29,7 @@ void print(std::ostream& os, const std::pair<First, Second>& p) {
     os << ")";
 }
 
-// Prints an entire tuple in (elem1, elem2, ...) format
+// Prints an entire tuple in (elem1, elem2, ..., elemN) format
 template<typename... Ts>
 void print(std::ostream& os, const std::tuple<Ts...>& tup) {
     os << "(";
@@ -33,7 +38,7 @@ void print(std::ostream& os, const std::tuple<Ts...>& tup) {
 }
 
 // Prints individual tuple elements
-template<std::size_t Index = 0, typename... Ts>
+template<std::size_t Index, typename... Ts>
 void print_tuple(std::ostream& os, const std::tuple<Ts...>& tup) {
     if constexpr (Index < sizeof...(Ts)) {
         if constexpr (Index > 0) {
