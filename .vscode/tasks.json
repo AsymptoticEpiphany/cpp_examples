@@ -5,7 +5,12 @@
             "label": "cmake configure",
             "type": "shell",
             "command": "cmake",
-            "args": ["-S", ".", "-B", "build"],
+            "args": [
+                "-S",
+                ".",
+                "-B",
+                "build"
+            ],
             "group": "build",
             "problemMatcher": []
         },
@@ -13,8 +18,14 @@
             "label": "cmake build",
             "type": "shell",
             "command": "cmake",
-            "args": ["--build", "build"],
-            "group": { "kind": "build", "isDefault": true },
+            "args": [
+                "--build",
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         },
         {
@@ -23,6 +34,20 @@
             "command": "./build/main",
             "dependsOn": "cmake build",
             "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         }
     ]
