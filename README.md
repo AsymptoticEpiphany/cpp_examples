@@ -57,6 +57,8 @@ This project uses GitHub Actions to automatically build and test all code on eve
 
 You can view the CI status and logs on the GitHub Actions tab of your repository.
 
+![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/run_unit_tests.yml/badge.svg)
+
 ## Project Structure
 - `src/main.cpp`: Entry point of the application.
 - `utils/print_tuple.h`: Utility header for printing tuples.
@@ -66,4 +68,3 @@ You can view the CI status and logs on the GitHub Actions tab of your repository
 - `.vscode/`: VS Code configuration files for build, test, and debug.
 - `.github/workflows/run_unit_tests.yml`: GitHub Actions workflow for CI.
 
-![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/run-tests.yml/badge.svg)
