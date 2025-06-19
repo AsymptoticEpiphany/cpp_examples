@@ -1,5 +1,5 @@
 # C++ Example Code
-This project currently prints the elements of a tuple nicely.
+This project currently prints the elements of a tuple nicely and includes Google Test. Continuous Integration (CI) is set up using GitHub Actions.
 
 ## Build and Run with CMake
 
@@ -45,6 +45,18 @@ make clean   # Remove the build directory
 - The launch configuration is set to run the executable from `build/main`.
 - Ensure you have the C++ and CMake Tools extensions for VS Code installed.
 
+## Continuous Integration (CI)
+
+This project uses GitHub Actions to automatically build and test all code on every push and pull request. The workflow is defined in `.github/workflows/run_unit_tests.yml` and performs the following steps:
+
+- Checks out the code
+- Installs dependencies (`cmake`, `g++`, `ninja-build`)
+- Configures the project with CMake and Ninja
+- Builds the project
+- Runs all unit tests with CTest
+
+You can view the CI status and logs on the GitHub Actions tab of your repository.
+
 ## Project Structure
 - `src/main.cpp`: Entry point of the application.
 - `utils/print_tuple.h`: Utility header for printing tuples.
@@ -52,3 +64,6 @@ make clean   # Remove the build directory
 - `CMakeLists.txt`: CMake build configuration (with Google Test integration).
 - `Makefile`: Delegates build/run/test/clean to CMake.
 - `.vscode/`: VS Code configuration files for build, test, and debug.
+- `.github/workflows/run_unit_tests.yml`: GitHub Actions workflow for CI.
+
+![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/run-tests.yml/badge.svg)
