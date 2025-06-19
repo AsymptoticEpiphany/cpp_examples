@@ -1,18 +1,14 @@
-CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17
-TARGET = main
-SRC = src/main.cpp
+# Use CMake to build and run the project
+.PHONY: all build run clean
 
-all: $(TARGET)
+all: build
 
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) $(SRC) -o $(TARGET)
+build:
+	cmake -S . -B build
+	cmake --build build
 
-run: $(TARGET)
-	./$(TARGET)
-
-test:
-	@echo "No tests defined yet. Add your test commands here."
+run: build
+	./build/main
 
 clean:
-	rm -f $(TARGET)
+	rm -rf build

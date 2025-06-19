@@ -2,25 +2,26 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "cmake configure",
             "type": "shell",
-            "command": "g++",
-            "args": [
-                "src/main.cpp",
-                "-o",
-                "main"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": ["$gcc"]
+            "command": "cmake",
+            "args": ["-S", ".", "-B", "build"],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "cmake build",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "build"],
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": []
         },
         {
             "label": "run",
             "type": "shell",
-            "command": "./main",
-            "dependsOn": "build",
+            "command": "./build/main",
+            "dependsOn": "cmake build",
             "group": "test",
             "problemMatcher": []
         }
