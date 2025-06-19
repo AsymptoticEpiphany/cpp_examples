@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "g++",
             "args": [
-                "main.cpp",
+                "src/main.cpp",
                 "-o",
                 "main"
             ],
