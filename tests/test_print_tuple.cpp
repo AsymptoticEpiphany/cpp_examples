@@ -1,4 +1,4 @@
-#include "utils/print_tuple.h"
+#include "print_tuple.h"
 
 #include <sstream>
 #include <string>
