@@ -1,5 +1,7 @@
 # C++ Example Code
-This project currently prints the elements of a tuple nicely and includes Google Test. Continuous Integration (CI) is set up using GitHub Actions. It also has an example of Multi Producer Multi Consumer queue.
+This project currently has an example of Multi Producer Multi Consumer queue.
+It also has a utility function that prints the elements of a tuple nicely and includes Google Test. 
+Continuous Integration (CI) is set up using GitHub Actions.
 
 ## Build and Run with Make
 
