@@ -20,8 +20,8 @@ class MPMCQueue {
     // Otherwise need std::hardware_destructive_interference_size,
     // which requires additional compiler flags.
     static constexpr size_t cache_line = 64;
-    static constexpr size_t Data_size = sizeof(std::atomic<size_t>) + sizeof(T);
-    static constexpr size_t padding_size = (Data_size < cache_line) ? (cache_line - Data_size) : 0;
+    static constexpr size_t data_size = sizeof(std::atomic<size_t>) + sizeof(T);
+    static constexpr size_t padding_size = (data_size < cache_line) ? (cache_line - data_size) : 0;
 
 public:
     MPMCQueue() {
