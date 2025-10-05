@@ -54,13 +54,17 @@ CI visibility:
 ![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/run_unit_tests.yml/badge.svg)
 
 ## Project Structure
-- `src/main.cpp`: Entry point of the application.
-- `utils/print_tuple.h`: Utility header for printing tuples.
-- `tests/test_print_tuple.cpp`: Unit tests for tuple printing utilities.
+cpp_examples/
+├── .github/
+│   └── workflows/
+│       └── run_unit_tests.yml   # GitHub Actions CI/CD pipeline configuration
+├── .vscode/                     # Visual Studio Code workspace settings
+├── src/                         # Source code for the MPMC queue and utilities
+├── tests/                       # Unit tests for the project
+├── utils/                       # Utility functions, e.g., tuple printing
+├── CMakeLists.txt               # CMake configuration file
+├── Makefile                     # Makefile for local builds
+├── README.md                    # Project documentation
+└── .gitignore                   # Git ignore file
 
-- `CMakeLists.txt`: CMake build configuration (with Google Test integration).
-- `Makefile`: Delegates build/run/test/clean to CMake.
-
-- `.vscode/`: VS Code configuration files for build, test, and debug.
-- `.github/workflows/run_unit_tests.yml`: GitHub Actions workflow for CI.
 
