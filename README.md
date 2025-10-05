@@ -8,23 +8,14 @@ Continuous Integration (CI) is set up using GitHub Actions.
 From the project root directory, run the following commands (which delegates to CMake):
 
 ```bash
-make build   # Configure and build using CMake
-make run     # Build (if needed) and run the executable
-make test    # Build and run all unit tests
-make clean   # Remove the build directory
-```
+make build             # Configure and build the project (default: Debug with memory sanitizers)
+make debug             # Build Debug version with memory sanitizers enabled
+make release           # Build Release version without memory sanitizers (optimized for production)
+make release_sanitize  # Build Release version with memory sanitizers enabled
+make run               # Build (if needed) and run the main executable
+make test              # Build (if needed) and run all unit tests (memory sanitizers enabled in Debug)
+make clean             # Remove the build directory and all generated files
 
-Or manually,
-
-```bash
-# Configure the project (run once or when CMake files change)
-cmake -S . -B build
-
-# Build the project
-cmake --build build
-
-# Run the executable
-./build/main
 ```
 
 ## Running Unit Tests
@@ -49,15 +40,16 @@ cmake --build build
 
 ## Continuous Integration (CI)
 
-This project uses GitHub Actions to automatically build and test all code on every push and pull request. The workflow is defined in `.github/workflows/run_unit_tests.yml` and performs the following steps:
+This project uses GitHub Actions to automatically build and test all code on every push and pull request.
+The workflow is defined in .github/workflows/run_unit_tests.yml and performs the following steps:
 
 - Checks out the code
-- Installs dependencies (`cmake`, `g++`, `ninja-build`)
-- Configures the project with CMake and Ninja
-- Builds the project
-- Runs all unit tests with CTest
-
-You can view the CI status and logs on the GitHub Actions tab.
+- Installs dependencies (cmake, g++, ninja-build)
+- Configures and builds the project in Debug mode with sanitizers enabled
+- Runs all unit tests via CTest, with AddressSanitizer/UBSan/Leak checks enabled in Debug builds
+- Optionally builds a Release version optimized for production (without sanitizers)
+- Keeps Debug and Release builds separate to avoid conflicts
+- You can view the CI status and logs on the GitHub Actions tab.
 
 ![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/run_unit_tests.yml/badge.svg)
 
