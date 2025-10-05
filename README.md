@@ -17,8 +17,8 @@ make test              # Build (if needed) and run all unit tests (memory saniti
 make clean             # Remove the build directory and all generated files
 
 ```
-## Continuous Integration (CI)
-
+## Continuous Integration / Continuous Deployment (CI/CD)
+```
 This project uses GitHub Actions to automatically build and test all code on every push and pull request.
 The workflow is defined in .github/workflows/run_unit_tests.yml and performs the following steps:
 
@@ -50,10 +50,11 @@ The workflow is defined in .github/workflows/run_unit_tests.yml and performs the
 CI visibility:
 - You can view the build and test status, logs, and uploaded artifacts in the GitHub Actions tab
 - Tagged releases will appear in the GitHub Releases tab once published.
-
+```
 ![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/run_unit_tests.yml/badge.svg)
 
 ## Project Structure
+```
 cpp_examples/
 ├── .github/
 │   └── workflows/
@@ -66,5 +67,5 @@ cpp_examples/
 ├── Makefile                     # Makefile for local builds
 ├── README.md                    # Project documentation
 └── .gitignore                   # Git ignore file
-
+```
 
