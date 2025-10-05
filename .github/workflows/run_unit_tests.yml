@@ -8,8 +8,6 @@ on:
     paths-ignore:
       - 'README.md'
   workflow_dispatch:
-  release:
-    types: [created]
 
 jobs:
   # =========================================
@@ -17,6 +15,8 @@ jobs:
   # =========================================
   build-and-test:
     runs-on: ubuntu-latest
+    outputs:
+      ci-artifact-path: build_release/main
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,29 +24,18 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y cmake g++ ninja-build
 
-      - name: Configure Debug Build with Sanitizers
+      # Debug build with sanitizers
+      - name: Configure Debug Build
         run: cmake -S . -B build_debug -G Ninja -DCMAKE_BUILD_TYPE=Debug -DENABLE_SANITIZERS=ON
 
       - name: Build Debug
         run: cmake --build build_debug
 
-      - name: Run Unit Tests (Debug with Sanitizers)
+      - name: Run Unit Tests (Debug + Sanitizers)
         run: ASAN_OPTIONS=detect_leaks=1:abort_on_error=1:color=always ctest --test-dir build_debug --output-on-failure
 
-  # =========================================
-  # 2️⃣ Release Build and Artifact Upload
-  # (only runs if build-and-test passes)
-  # =========================================
-  build-release:
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake g++ ninja-build
-
+      # Release build artifact for inspection
+      # Only runs if unit tests with debugging and sanitizers works
       - name: Configure Release Build
         run: cmake -S . -B build_release -G Ninja -DCMAKE_BUILD_TYPE=Release
 
@@ -59,27 +48,33 @@ jobs:
           name: release-binary
           path: build_release/main
 
-  # =============================================
-  # 3️⃣ Tagged Release → Use Existing Artifact
-  # (Skips rebuilding, and renames and publishes)
-  # =============================================
+  # =========================================
+  # 2️⃣ Tagged Release → Versioned Binary + GitHub Release
+  # =========================================
   tagged-release:
     runs-on: ubuntu-latest
+    needs: build-and-test
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: Download last Release Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: release-binary
-          path: .
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      # Always rebuild production Release binary
+      - name: Configure Release Build
+        run: cmake -S . -B build_release -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Release
+        run: cmake --build build_release
+
+      # Rename binary to include version
       - name: Rename binary with version
         run: |
           TAG="${GITHUB_REF##*/}"
           VERSIONED_NAME="my_app_${TAG}_linux_x64"
-          mv main "${VERSIONED_NAME}"
+          mv build_release/main "${VERSIONED_NAME}"
           echo "VERSIONED_NAME=${VERSIONED_NAME}" >> $GITHUB_ENV
 
+      # Upload versioned binary to GitHub Release
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
