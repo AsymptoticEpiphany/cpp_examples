@@ -39,7 +39,7 @@ jobs:
 
       # 5️⃣ Upload Release binary as artifact
       - name: Upload Release Binary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my_app_release
           path: build_release/main
