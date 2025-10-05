@@ -17,27 +17,6 @@ make test              # Build (if needed) and run all unit tests (memory saniti
 make clean             # Remove the build directory and all generated files
 
 ```
-
-## Running Unit Tests
-
-- To run all unit tests from the command line:
-  ```bash
-  make test
-  # or
-  cd build && ctest
-  ```
-- To run the test executable directly:
-  ```bash
-  ./build/tests
-  ```
-- In Visual Studio Code you can use the CMake Tools extension or Test Explorer UI to run and debug tests interactively.
-
-## Debugging in VS Code
-
-- Press **F5** to build and launch the program in the debugger.
-- The launch configuration is set to run the executable from `build/main`.
-- Ensure you have the C++ and CMake Tools extensions for VS Code installed.
-
 ## Continuous Integration (CI)
 
 This project uses GitHub Actions to automatically build and test all code on every push and pull request.
@@ -50,6 +29,27 @@ The workflow is defined in .github/workflows/run_unit_tests.yml and performs the
 - Optionally builds a Release version optimized for production (without sanitizers)
 - Keeps Debug and Release builds separate to avoid conflicts
 - You can view the CI status and logs on the GitHub Actions tab.
+
+- Checks out the code from the repository
+- Installs dependencies (cmake, g++, ninja-build) on Ubuntu
+- Debug build with sanitizers:
+  - Configures and builds the project in Debug mode with AddressSanitizer (ASan), UndefinedBehaviorSanitizer (UBSan), and LeakSanitizer enabled
+  - Runs all unit tests via CTest, reporting any memory or undefined behavior issues\
+
+- Release build for production:
+  - Builds a separate Release version optimized for performance, without sanitizers
+  - This Release binary is kept separate from Debug builds to avoid conflicts
+  - The binary is optionally uploaded as a CI artifact for inspection or debugging purposes
+
+- Tag-based releases (i.e. git tag v0.0.1 && git push origin v0.0.1):
+  - When a commit is tagged (e.g., v1.0.0), the workflow automatically:
+    - Rebuilds the Release binary to ensure it’s fresh and reproducible
+    - Renames the binary to a versioned format, e.g., my_app_v1.0.0_linux_x64
+    - Uploads the versioned binary to GitHub Releases for download and distribution
+
+CI visibility:
+- You can view the build and test status, logs, and uploaded artifacts in the GitHub Actions tab
+- Tagged releases will appear in the GitHub Releases tab once published.
 
 ![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/run_unit_tests.yml/badge.svg)
 
