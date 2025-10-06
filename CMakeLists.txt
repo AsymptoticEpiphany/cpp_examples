@@ -24,7 +24,10 @@ endif()
 # Main executable
 # ------------------------------------------------------------------------------
 add_executable(main src/main.cpp)
-target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(main PRIVATE 
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/include
+)
 
 # Compile and link options for ASan/UBSan/LSan
 target_compile_options(main PRIVATE
