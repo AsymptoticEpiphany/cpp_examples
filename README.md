@@ -56,16 +56,16 @@ CI visibility:
 ## Project Structure
 ```
 cpp_examples/
-├── .github/
-│   └── workflows/
-│       └── run_unit_tests.yml   # GitHub Actions CI/CD pipeline configuration
-├── .vscode/                     # Visual Studio Code workspace settings
-├── src/                         # Source code for the MPMC queue and utilities
-├── tests/                       # Unit tests for the project
-├── utils/                       # Utility functions, e.g., tuple printing
-├── CMakeLists.txt               # CMake configuration file
-├── Makefile                     # Makefile for local builds
-├── README.md                    # Project documentation
-└── .gitignore                   # Git ignore file
+├── include/
+│   └── nlohmann/
+│       └── json.hpp
+├── src/
+│   └── main.cpp
+├── tests/
+│   └── test_print_tuple.cpp
+│   └── test_mpmc_queue.cpp
+├── CMakeLists.txt
+├── Makefile
+└── README.md
 ```
 
