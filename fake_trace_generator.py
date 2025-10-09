@@ -8,11 +8,12 @@ import sys
 import threading
 import time
 from datetime import datetime, timedelta, timezone
+from typing import Optional, List, Dict, Any
 
 # ------------------------
 # CONFIGURATION PARAMETERS
 # ------------------------
-ISSUERS = [
+ISSUERS: List[str] = [
     "3M", "Amgen", "Apple", "American Express", "Boeing", "Caterpillar",
     "Chevron", "Cisco Systems", "Coca-Cola", "Disney", "Dow Inc.", "Goldman Sachs",
     "Home Depot", "Honeywell", "IBM", "Intel", "Johnson & Johnson", "JPMorgan Chase",
@@ -20,16 +21,14 @@ ISSUERS = [
     "Travelers", "Verizon", "Visa", "Walgreens Boots Alliance", "Walmart"
 ]
 
-# Trades should be reported within this timeframe to be considered reported on time
-ON_TIME_THRESHOLD_SECONDS = 15 * 60  # 15 minutes
-
+ON_TIME_THRESHOLD_SECONDS: int = 15 * 60  # 15 minutes
 
 # ----------------
 # CUSIP GENERATION
 # ----------------
-def cusip_check_digit(cusip_base):
+def cusip_check_digit(cusip_base: str) -> str:
     """Compute the official CUSIP check digit."""
-    def cusip_value(c):
+    def cusip_value(c: str) -> int:
         if c.isdigit():
             return int(c)
         elif c.isalpha():
@@ -43,7 +42,7 @@ def cusip_check_digit(cusip_base):
         else:
             raise ValueError(f"Invalid CUSIP character: {c}")
 
-    values = [cusip_value(c) for c in cusip_base]
+    values: List[int] = [cusip_value(c) for c in cusip_base]
     total = 0
     for i, v in enumerate(values):
         if i % 2 == 1:
@@ -54,42 +53,47 @@ def cusip_check_digit(cusip_base):
     return str(check)
 
 
-def generate_random_cusip():
+def generate_random_cusip() -> str:
     """Generate a valid 9-character CUSIP."""
-    base = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-    check = cusip_check_digit(base)
-
+    base: str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    check: str = cusip_check_digit(base)
     return base + check
 
 
-def random_issuer():
+def random_issuer() -> str:
     return random.choice(ISSUERS)
 
 
-def random_price():
+def random_price() -> float:
     return round(random.uniform(90.0, 110.0), 3)
 
 
-def random_volume():
+def random_volume() -> int:
     return random.randint(100000, 5000000)
 
 
 # ----------------
 # TRADE GENERATION
 # ----------------
-def make_trade(cusip=None, exec_time=None, pair_id=None, side=None, dealer_id=None):
+def make_trade(
+    cusip: Optional[str] = None,
+    exec_time: Optional[datetime] = None,
+    pair_id: Optional[str] = None,
+    side: Optional[str] = None,
+    dealer_id: Optional[int] = None
+) -> Dict[str, Any]:
     """Generate one trade leg."""
     cusip = cusip or generate_random_cusip()
     issuer = random_issuer()
-    now = datetime.now(timezone.utc)  # timezone-aware UTC
+    now: datetime = datetime.now(timezone.utc)  # timezone-aware UTC
 
     exec_time = exec_time or (now - timedelta(seconds=random.randint(0, 600)))
-    report_delay = random.randint(0, 1800)
-    report_time = exec_time + timedelta(seconds=report_delay)
-    late = (report_time - exec_time).total_seconds() > ON_TIME_THRESHOLD_SECONDS
-    modifier3 = "Z" if late else ""
+    report_delay: int = random.randint(0, 1800)
+    report_time: datetime = exec_time + timedelta(seconds=report_delay)
+    late: bool = (report_time - exec_time).total_seconds() > ON_TIME_THRESHOLD_SECONDS
+    modifier3: str = "Z" if late else ""
 
-    msg = {
+    msg: Dict[str, Any] = {
         "control_id": pair_id or ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
         "cusip": cusip,
         "issuer": issuer,
@@ -110,8 +114,8 @@ def make_trade(cusip=None, exec_time=None, pair_id=None, side=None, dealer_id=No
 
 # --------------------------------------------
 # TCP SOCKET THREAD (with disconnect handling)
-# # ------------------------------------------
-def socket_server_thread(host, port, queue):
+# --------------------------------------------
+def socket_server_thread(host: str, port: int, queue: List[Dict[str, Any]]) -> None:
     """Continuously send messages in the queue to connected clients."""
     print(f"[TRACE FEED] Starting TCP server on {host}:{port}", file=sys.stderr)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -147,7 +151,7 @@ def socket_server_thread(host, port, queue):
 # ---------
 # MAIN LOOP
 # ---------
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Fake TRACE feed generator")
     parser.add_argument("--rate", type=float, default=1.0, help="messages per second")
     parser.add_argument("--rate-jitter", type=float, default=0.0, help="fractional jitter to apply to sleep interval (0.0-1.0)")
@@ -161,8 +165,8 @@ def main():
     parser.add_argument("--out-file", type=str, help="optional file to write all messages")
     args = parser.parse_args()
 
-    msg_queue = []
-    last_burst_time = time.time()
+    msg_queue: List[Dict[str, Any]] = []
+    last_burst_time: float = time.time()
 
     if args.tcp:
         threading.Thread(
@@ -176,7 +180,7 @@ def main():
 
     try:
         while True:
-            now_time = time.time()
+            now_time: float = time.time()
 
             # ----------------------
             # Handle periodic bursts
@@ -251,9 +255,9 @@ def main():
             # --------------------------
             # Sleep with optional jitter
             # --------------------------
-            interval = 1.0 / args.rate
+            interval: float = 1.0 / args.rate
             if args.rate_jitter > 0.0:
-                jitter = random.uniform(-interval * args.rate_jitter, interval * args.rate_jitter)
+                jitter: float = random.uniform(-interval * args.rate_jitter, interval * args.rate_jitter)
                 interval += jitter
                 
             time.sleep(max(0.001, interval))
