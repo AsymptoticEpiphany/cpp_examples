@@ -12,8 +12,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Sanitizer configuration
 # ------------------------------------------------------------------------------
 option(ENABLE_SANITIZERS "Enable Address/UB/Leak sanitizers (Debug only by default)" OFF)
-
-# Convert ON/OFF to 1/0 for generator expressions
 if(ENABLE_SANITIZERS)
     set(ENABLE_SANITIZERS_BOOL 1)
 else()
@@ -21,13 +19,24 @@ else()
 endif()
 
 # ------------------------------------------------------------------------------
+# Find PostgreSQL
+# ------------------------------------------------------------------------------
+find_package(PostgreSQL REQUIRED)
+
+# ------------------------------------------------------------------------------
 # Main executable
 # ------------------------------------------------------------------------------
 add_executable(main src/main.cpp)
+
+# Include directories
 target_include_directories(main PRIVATE 
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/include
+    ${PostgreSQL_INCLUDE_DIRS}
 )
+
+# Link PostgreSQL
+target_link_libraries(main PRIVATE ${PostgreSQL_LIBRARIES})
 
 # Compile and link options for ASan/UBSan/LSan
 target_compile_options(main PRIVATE
@@ -82,4 +91,3 @@ target_link_options(unit_tests PRIVATE
 
 include(GoogleTest)
 gtest_discover_tests(unit_tests)
-

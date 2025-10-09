@@ -9,22 +9,24 @@ import threading
 import time
 from datetime import datetime, timedelta, timezone
 
-# --------------------------
+# ------------------------
 # CONFIGURATION PARAMETERS
-# --------------------------
-
+# ------------------------
 ISSUERS = [
-    "US Treasury", "IBM", "Apple", "Microsoft",
-    "Johnson & Johnson", "Fannie Mae", "Goldman Sachs",
-    "Citi", "Amazon", "Pfizer"
+    "3M", "Amgen", "Apple", "American Express", "Boeing", "Caterpillar",
+    "Chevron", "Cisco Systems", "Coca-Cola", "Disney", "Dow Inc.", "Goldman Sachs",
+    "Home Depot", "Honeywell", "IBM", "Intel", "Johnson & Johnson", "JPMorgan Chase",
+    "Merck", "Microsoft", "Nike", "Procter & Gamble", "Salesforce",
+    "Travelers", "Verizon", "Visa", "Walgreens Boots Alliance", "Walmart"
 ]
 
+# Trades should be reported within this timeframe to be considered reported on time
 ON_TIME_THRESHOLD_SECONDS = 15 * 60  # 15 minutes
 
-# --------------------------
-# CUSIP GENERATION
-# --------------------------
 
+# ----------------
+# CUSIP GENERATION
+# ----------------
 def cusip_check_digit(cusip_base):
     """Compute the official CUSIP check digit."""
     def cusip_value(c):
@@ -48,6 +50,7 @@ def cusip_check_digit(cusip_base):
             v *= 2
         total += v // 10 + v % 10
     check = (10 - (total % 10)) % 10
+
     return str(check)
 
 
@@ -55,6 +58,7 @@ def generate_random_cusip():
     """Generate a valid 9-character CUSIP."""
     base = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
     check = cusip_check_digit(base)
+
     return base + check
 
 
@@ -70,10 +74,9 @@ def random_volume():
     return random.randint(100000, 5000000)
 
 
-# --------------------------
+# ----------------
 # TRADE GENERATION
-# --------------------------
-
+# ----------------
 def make_trade(cusip=None, exec_time=None, pair_id=None, side=None, dealer_id=None):
     """Generate one trade leg."""
     cusip = cusip or generate_random_cusip()
@@ -101,13 +104,13 @@ def make_trade(cusip=None, exec_time=None, pair_id=None, side=None, dealer_id=No
         "coupon": round(random.uniform(1.0, 6.0), 2),
         "maturity": (now + timedelta(days=random.randint(365, 3650))).date().isoformat()
     }
+
     return msg
 
 
-# --------------------------
+# --------------------------------------------
 # TCP SOCKET THREAD (with disconnect handling)
-# --------------------------
-
+# # ------------------------------------------
 def socket_server_thread(host, port, queue):
     """Continuously send messages in the queue to connected clients."""
     print(f"[TRACE FEED] Starting TCP server on {host}:{port}", file=sys.stderr)
@@ -141,10 +144,9 @@ def socket_server_thread(host, port, queue):
                         time.sleep(0.001)
 
 
-# --------------------------
+# ---------
 # MAIN LOOP
-# --------------------------
-
+# ---------
 def main():
     parser = argparse.ArgumentParser(description="Fake TRACE feed generator")
     parser.add_argument("--rate", type=float, default=1.0, help="messages per second")
@@ -176,15 +178,17 @@ def main():
         while True:
             now_time = time.time()
 
-            # ------------------------
+            # ----------------------
             # Handle periodic bursts
-            # ------------------------
+            # ----------------------
             if args.burst > 0 and (now_time - last_burst_time) >= args.burst_interval:
                 print(f"[TRACE FEED] Emitting burst of {args.burst} messages...", file=sys.stderr)
+
                 for _ in range(args.burst):
                     msg = make_trade()
                     msg_str = json.dumps(msg)
                     print(msg_str, flush=True)
+
                     if args.tcp:
                         msg_queue.append(msg)
                     if args.out_file:
@@ -202,20 +206,23 @@ def main():
                         )
                         paired_str = json.dumps(paired_msg)
                         print(paired_str, flush=True)
+
                         if args.tcp:
                             msg_queue.append(paired_msg)
                         if args.out_file:
                             with open(args.out_file, "a") as f:
                                 f.write(paired_str + "\n")
+
                 last_burst_time = now_time
                 continue
 
-            # ------------------------
+            # ------------------------------
             # Normal rate-controlled message
-            # ------------------------
+            # ------------------------------
             msg = make_trade()
             msg_str = json.dumps(msg)
             print(msg_str, flush=True)
+
             if args.tcp:
                 msg_queue.append(msg)
             if args.out_file:
@@ -234,19 +241,21 @@ def main():
                 paired_str = json.dumps(paired_msg)
                 time.sleep(random.uniform(0.1, 0.5))
                 print(paired_str, flush=True)
+
                 if args.tcp:
                     msg_queue.append(paired_msg)
                 if args.out_file:
                     with open(args.out_file, "a") as f:
                         f.write(paired_str + "\n")
 
-            # ------------------------
+            # --------------------------
             # Sleep with optional jitter
-            # ------------------------
+            # --------------------------
             interval = 1.0 / args.rate
             if args.rate_jitter > 0.0:
                 jitter = random.uniform(-interval * args.rate_jitter, interval * args.rate_jitter)
                 interval += jitter
+                
             time.sleep(max(0.001, interval))
 
             # Prevent unbounded queue growth
