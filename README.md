@@ -3,6 +3,15 @@ This project currently has an example of Multi Producer Multi Consumer queue.
 It also has a utility function that prints the elements of a tuple nicely and includes Google Test. 
 Continuous Integration (CI) is set up using GitHub Actions.
 
+General usage after running 'make build' as explained below.
+
+- Open 4 terminal windows.
+- Run 'python3 fake_trace_generator.py --tcp --port 5556'
+  - Run on ports 5555, 5556, and 5557 in each terminal window.
+- Run 'make run' in the main terminal window
+- The python scripts will generate fake random data and send on a pipe to their respective ports, and the main cpp file will listen on those ports and begin ingesting that data and putting it on a multi producer multi consumer queue for processing.
+- For this to work correctly, there also needs to be a Postgesql DB running with correct permissions. Currently that is hardcoded in main and will come from command line args in the future.
+
 ## Build and Run with Make
 
 From the project root directory, run the following commands (which delegates to CMake):
