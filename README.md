@@ -65,16 +65,20 @@ CI visibility:
 ## Project Structure
 ```
 cpp_examples/
+├── .github/
+│   └── workflows/
+│       └── run_unit_tests.yml
+├── .vscode/
 ├── include/
-│   └── nlohmann/
-│       └── json.hpp
+│   └── nlohmann
 ├── src/
-│   └── main.cpp
 ├── tests/
-│   └── test_print_tuple.cpp
-│   └── test_mpmc_queue.cpp
+├── utils/
 ├── CMakeLists.txt
 ├── Makefile
-└── README.md
+├── README.md
+└── .gitignore
+└── fake_trace_generator.py
+
 ```
 
