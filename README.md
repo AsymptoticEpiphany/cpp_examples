@@ -1,7 +1,10 @@
 # C++ Example Code
 This project currently has an example of Multi Producer Multi Consumer queue.
-It also has a utility function that prints the elements of a tuple nicely and includes Google Test. 
 Continuous Integration (CI) is set up using GitHub Actions.
+
+This system will generate fake TRACE financial data on multiple TCP data pipes.
+It will listen to this fake data, and put it onto the high performance data queue
+and process it.
 
 General usage after running 'make build' as explained below.
 
