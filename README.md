@@ -1,10 +1,11 @@
 # C++ Example Code
-This project currently has an example of Multi Producer Multi Consumer queue.
-Continuous Integration (CI) is set up using GitHub Actions.
+A high-performance FINRA TRACE bond trade ingestion pipeline in C++17. 
+Multiple TCP feeds stream simulated trade data through a lockless MPMC queue into PostgreSQL, 
+with real-time issuer enrichment. 
 
-This system will generate fake TRACE financial data on multiple TCP data pipes.
-It will listen to this fake data, and put it onto the high performance data queue
-and process it.
+Designed to demonstrate low-latency concurrent data processing for financial market data.
+
+Continuous Integration (CI) is set up using GitHub Actions.
 
 General usage after running 'make build' as explained below.
 
