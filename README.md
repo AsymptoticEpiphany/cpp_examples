@@ -2,7 +2,7 @@
 
 A high-performance FINRA TRACE bond trade ingestion system in C++17. Multiple TCP feeds stream simulated trade data through a **lockless multi-producer/multi-consumer (MPMC) queue** into PostgreSQL, with real-time issuer enrichment. Designed to demonstrate low-latency concurrent data processing for financial market data.
 
-![Build Status](https://github.com/AsymptoticEpiphany/cpp_examples/actions/workflows/ci_cd_jobs.yml/badge.svg)
+![Build Status](https://github.com/AsymptoticEpiphany/finra-trace-pipeline/actions/workflows/ci_cd_jobs.yml/badge.svg)
 
 ## Architecture
 
